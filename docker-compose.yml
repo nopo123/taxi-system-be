@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  db:
+    image:  postgres:15
+    container_name: drivers-system-database
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
