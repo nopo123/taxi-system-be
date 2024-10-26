@@ -23,12 +23,6 @@ export class UserController {
     return await this.userService.create(body, user);
   }
 
-  @Public()
-  @Post('/super-admin')
-  async createSuperAdmin(@Body() body: CreateSuperAdminDto): Promise<GetUserDto> {
-    return await this.userService.createSuperAdmin(body);
-  }
-
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   @UseGuards(RolesGuard)
   @Get()
