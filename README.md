@@ -24,3 +24,9 @@ Run the migration:
 ```bash
 $ npm run typeorm:migration:run
 ```
+
+## Usage
+
+The API documentation can be found at `http://localhost:3000/api`.
+
+For testing, visit `http://localhost:3000/login` and log in with email `admin@admin.com` and password `pass`.
