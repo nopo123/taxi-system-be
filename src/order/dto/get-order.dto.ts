@@ -1,16 +1,16 @@
-import { Type } from "class-transformer";
-import { IsNumber, IsObject, IsOptional, IsString } from "class-validator";
-import { GetUserDto } from "src/user/dto/get-user.dto";
+import { Type } from 'class-transformer';
+import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
+import { GetUserDto } from 'src/user/dto/get-user.dto';
 
 export class GetOrderDto {
   @IsNumber()
   id: number;
 
   @IsString()
-  firstName: string
+  firstName: string;
 
   @IsString()
-  lastName: string
+  lastName: string;
 
   @IsString()
   route: string;

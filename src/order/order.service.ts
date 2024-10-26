@@ -1,17 +1,11 @@
-import {
-  ForbiddenException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Between, Repository } from 'typeorm';
 import { OrderEntity } from './entities/order.entity';
 import { mapOrderToGetOrderDto } from './mappers/order.mapper';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { GetOrderDto } from './dto/get-order-dto';
+import { GetOrderDto } from './dto/get-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import PDFDocument from 'pdfkit';
 import { OrderUserEntity } from 'src/order_user/entities/order-user.entity';
@@ -34,29 +28,18 @@ export class OrderService {
     private readonly orderUserService: OrderUserService,
   ) {}
 
-  async create(
-    body: CreateOrderDto,
-    loggedUser: UserEntity,
-  ): Promise<GetOrderDto> {
-    const foundUser: GetUserDto = await this.userService.findOne(
-      body.userId,
-      loggedUser,
-    );
+  async create(body: CreateOrderDto, loggedUser: UserEntity): Promise<GetOrderDto> {
+    const foundUser: GetUserDto = await this.userService.findOne(body.userId, loggedUser);
 
     if (
-      (loggedUser.organizationId === null ||
-        foundUser.organizationId === null) &&
+      (loggedUser.organizationId === null || foundUser.organizationId === null) &&
       loggedUser.role !== Role.SUPER_ADMIN
     ) {
       throw new NotFoundException('Používateľ nie je súčasťou organizácie');
     }
 
     if (!body.orderUserId) {
-      await this.orderUserService.create(
-        body.firstName,
-        body.lastName,
-        loggedUser,
-      );
+      await this.orderUserService.create(body.firstName, body.lastName, loggedUser);
     }
 
     const createdOrder: OrderEntity = this.orderRepository.create({
@@ -118,11 +101,7 @@ export class OrderService {
     return mapOrderToGetOrderDto(order);
   }
 
-  async update(
-    id: number,
-    body: UpdateOrderDto,
-    loggedUser: UserEntity,
-  ): Promise<GetOrderDto> {
+  async update(id: number, body: UpdateOrderDto, loggedUser: UserEntity): Promise<GetOrderDto> {
     const order = await this.orderRepository.findOne({ where: { id: id } });
 
     if (!order) {
@@ -140,11 +119,7 @@ export class OrderService {
     });
 
     if (!updatedOrder.orderUserId) {
-      await this.orderUserService.create(
-        body.firstName,
-        body.lastName,
-        loggedUser,
-      );
+      await this.orderUserService.create(body.firstName, body.lastName, loggedUser);
     }
 
     return mapOrderToGetOrderDto(updatedOrder);
@@ -186,9 +161,7 @@ export class OrderService {
       order: { date: 'ASC' },
     });
 
-    const organization = await this.organizationService.findOne(
-      loggedUser.organizationId,
-    );
+    const organization = await this.organizationService.findOne(loggedUser.organizationId);
 
     if (orders.length === 0) {
       throw new NotFoundException('Žiadne objednávky neboli nájdené');
@@ -200,10 +173,7 @@ export class OrderService {
     pdfDoc.fontSize(24);
     pdfDoc.text(organization.name, { align: 'center' });
     pdfDoc.fontSize(20);
-    pdfDoc.text(
-      `Výkaz za mesiac ${fromObj.getMonth() + 1}.${fromObj.getFullYear()}`,
-      { align: 'center' },
-    );
+    pdfDoc.text(`Výkaz za mesiac ${fromObj.getMonth() + 1}.${fromObj.getFullYear()}`, { align: 'center' });
     pdfDoc.moveDown();
 
     pdfDoc.fontSize(12);
@@ -217,12 +187,8 @@ export class OrderService {
       pdfDoc.moveDown();
       pdfDoc.text(`Dátum/Date: ${order.date.toLocaleDateString('sk-SK')}`);
       pdfDoc.text(`Čas/Time: ${formattedTime}`);
-      pdfDoc.text(
-        `Hlavný vodič/Main driver: ${order.user.firstName} ${order.user.lastName}`,
-      );
-      pdfDoc.text(
-        `Pasažier/Passenger: ${order.user.firstName} ${order.user.lastName}`,
-      );
+      pdfDoc.text(`Hlavný vodič/Main driver: ${order.user.firstName} ${order.user.lastName}`);
+      pdfDoc.text(`Pasažier/Passenger: ${order.user.firstName} ${order.user.lastName}`);
       pdfDoc.text(`Celková suma/Total price: ${order.price}€`);
       pdfDoc.text(`Km/taxi: ${order.distance} km`);
       pdfDoc.text(`Trasa/Route: ${order.route}`);

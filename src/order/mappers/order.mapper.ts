@@ -1,6 +1,6 @@
-import { mapUserToGetUserDto } from "src/user/mappers/user.mapper";
-import { GetOrderDto } from "../dto/get-order-dto";
-import { OrderEntity } from "../entities/order.entity";
+import { mapUserToGetUserDto } from 'src/user/mappers/user.mapper';
+import { GetOrderDto } from '../dto/get-order.dto';
+import { OrderEntity } from '../entities/order.entity';
 
 export const mapOrderToGetOrderDto = (order: OrderEntity): GetOrderDto => {
   return {

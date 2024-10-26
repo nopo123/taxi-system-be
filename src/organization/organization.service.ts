@@ -4,22 +4,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { OrganizationEntity } from './entities/organization.entity';
-import { CreateOrganiationDto } from './dto/create-organization.dto';
+import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { mapOrganizationToGetOrganizationDto } from './mappers/organization.mapper';
 import { OrderEntity } from 'src/order/entities/order.entity';
 import { Connection, EntityManager } from 'typeorm';
 
 @Injectable()
 export class OrganizationService {
-
   constructor(
     private readonly connection: Connection,
     @InjectRepository(OrganizationEntity)
     private readonly organizationRepository: Repository<OrganizationEntity>,
-  ){}
+  ) {}
 
-  async create(body: CreateOrganiationDto): Promise<GetOrganizationDto> {
-    const foundOrganization = await this.organizationRepository.findOne({where: { name: body.name }});
+  async create(body: CreateOrganizationDto): Promise<GetOrganizationDto> {
+    const foundOrganization = await this.organizationRepository.findOne({
+      where: { name: body.name },
+    });
     if (foundOrganization) {
       throw new Error('Organizácia s týmto názvom už existuje');
     }
@@ -35,12 +36,17 @@ export class OrganizationService {
   }
 
   async findAll(): Promise<GetOrganizationDto[]> {
-    const organizations = await this.organizationRepository.find({relations: ['users']});
+    const organizations = await this.organizationRepository.find({
+      relations: ['users'],
+    });
     return organizations.map((organization: OrganizationEntity) => mapOrganizationToGetOrganizationDto(organization));
   }
 
   async findOne(id: number): Promise<GetOrganizationDto> {
-    const organization: OrganizationEntity = await this.organizationRepository.findOne({where: { id: id }, relations: ['users']});
+    const organization: OrganizationEntity = await this.organizationRepository.findOne({
+      where: { id: id },
+      relations: ['users'],
+    });
     if (!organization) {
       throw new Error('Organizácia nebola nájdená');
     }
@@ -48,8 +54,10 @@ export class OrganizationService {
     return mapOrganizationToGetOrganizationDto(organization);
   }
 
-  async update(id: number, body: CreateOrganiationDto): Promise<GetOrganizationDto> {
-    const organization = await this.organizationRepository.findOne({where: { id }});
+  async update(id: number, body: CreateOrganizationDto): Promise<GetOrganizationDto> {
+    const organization = await this.organizationRepository.findOne({
+      where: { id },
+    });
     if (!organization) {
       throw new Error('Organizácia nebola nájdená');
     }
