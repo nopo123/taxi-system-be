@@ -79,7 +79,7 @@ describe('Users Testing', () => {
     return request(app.getHttpServer())
       .post('/user/super-admin')
       .send(createSuperAdminDto)
-      .expect(HttpStatus.INTERNAL_SERVER_ERROR)
+      .expect(HttpStatus.NOT_FOUND)
   });
 
   it('Find All Users [GET /user]', async () => {

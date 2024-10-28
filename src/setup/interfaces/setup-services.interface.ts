@@ -10,9 +10,9 @@ import {RolesService} from "../../roles/roles.service";
 import {OrderService} from "../../order/order.service";
 import {OrderUserService} from "../../order_user/order_user.service";
 import { OrderEntity } from 'src/order/entities/order.entity';
-import { GetOrderDto } from 'src/order/dto/get-order-dto';
 import { GetOrderUserDto } from 'src/order_user/dto/get-order-user.dto';
 import { OrderUserEntity } from 'src/order_user/entities/order-user.entity';
+import { GetOrderDto } from 'src/order/dto/get-order.dto';
 
 export interface SetupTestingData {
   app: NestExpressApplication;

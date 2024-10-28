@@ -1,4 +1,4 @@
-import { OrderEntity } from 'src/order/entities/order.entity';
+import { OrderEntity } from '../../order/entities/order.entity';
 import { GetUserDto } from '../dto/get-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import {mapOrderToGetOrderDtoWithoutUser} from "../../order/mappers/order.mapper";

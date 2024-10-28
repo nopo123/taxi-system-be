@@ -5,7 +5,7 @@ import {
   SetupTestingData,
 } from '../../src/setup/interfaces/setup-services.interface';
 import request from 'supertest';
-import { CreateOrganiationDto } from '../../src/organization/dto/create-organization.dto';
+import { CreateOrganizationDto } from '../../src/organization/dto/create-organization.dto';
 
 describe('Organization Testing', () => {
   const TEST_NAME = 'organizationTesting';
@@ -37,7 +37,7 @@ describe('Organization Testing', () => {
   });
 
   it('Create Organization [POST /organization]', async () => {
-    const createOrganizationDto: CreateOrganiationDto = {
+    const createOrganizationDto: CreateOrganizationDto = {
       name: ORGANIZATION_NAME,
       address: ORGANIZATION_ADDRESS,
     };
@@ -77,7 +77,7 @@ describe('Organization Testing', () => {
   });
 
   it('Update Organization [PUT /organization/:id]', async () => {
-    const updateOrganizationDto: CreateOrganiationDto = {
+    const updateOrganizationDto: CreateOrganizationDto = {
       name: 'Updated Organization Name',
       address: '456 Updated Address',
     };

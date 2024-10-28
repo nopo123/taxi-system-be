@@ -9,14 +9,14 @@ import { CreateSuperAdminDto } from '../../user/dto/create-super-admin.dto';
 import { Role } from '../../user/enums/role.enum';
 import { GetOrganizationDto } from '../../organization/dto/get-organization.dto';
 import { OrganizationService } from '../../organization/organization.service';
-import { CreateOrganiationDto } from '../../organization/dto/create-organization.dto';
+import { CreateOrganizationDto } from '../../organization/dto/create-organization.dto';
 import { RolesService } from '../../roles/roles.service';
 import {CreateUserDto} from "../../user/dto/create-user.dto";
 import {OrderService} from "../../order/order.service";
 import {OrderUserService} from "../../order_user/order_user.service";
-import { GetOrderDto } from '../../order/dto/get-order-dto';
 import { CreateOrderDto } from '../../order/dto/create-order.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
+import { GetOrderDto } from 'src/order/dto/get-order.dto';
 export class SetupTestingEntitiesHelpers {
   usersService: UserService;
   organizationService: OrganizationService;
@@ -74,7 +74,7 @@ export class SetupTestingEntitiesHelpers {
   ): Promise<GetOrganizationDto[]> {
     const organizations: GetOrganizationDto[] = [];
     for (let i = 0; i < count; i++) {
-      const createOrganizationDto: CreateOrganiationDto = {
+      const createOrganizationDto: CreateOrganizationDto = {
         name: 'testingOrganization' + i,
         address: 'testingCity',
       };

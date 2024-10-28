@@ -1,6 +1,6 @@
 import { IsArray, IsNumber, IsObject, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { GetOrganizationNoUsersDto } from '../../organization/dto/get-no-users-organization.dto';
+import { GetOrganizationDto } from 'src/organization/dto/get-organization.dto';
 
 export class GetLoggedInDto {
   @ApiProperty({ description: 'id for user', example: 1 })
@@ -54,5 +54,5 @@ export class GetLoggedInDto {
 
   @ApiProperty({ description: 'organization' })
   @IsObject()
-  readonly organization: GetOrganizationNoUsersDto;
+  readonly organization: GetOrganizationDto;
 }

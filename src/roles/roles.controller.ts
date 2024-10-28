@@ -12,11 +12,11 @@ import { CreateRolesDto } from './dto/create-roles.dto';
 import { RestApiResponseObject } from '../common/decorators/rest-api-response-object-decorator';
 import { Roles } from '../common/decorators/role.decorator';
 import { Role } from '../user/enums/role.enum';
-import { RolesGuard } from '../common/guards/role.guard';
 import { GetRolesDto } from './dto/get-roles.dto';
 import { GetUserDto } from '../user/dto/get-user.dto';
 import { RestApiResponseArray } from '../common/decorators/rest-api-response-array-decorator';
 import {LoggedInUser} from "../common/decorators/login-user.decorator";
+import { RolesGuard } from 'src/common/guards/role.guards';
 
 @Controller('roles')
 export class RolesController {
