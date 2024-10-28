@@ -1,11 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { mapUserToGetUserDto } from 'src/user/mappers/user.mapper';
-import { UserService } from 'src/user/user.service';
 import { jwtConstants } from './guards/constants';
-import { verifyPassword } from 'src/common/helpers/password.helper';
 import { LoginUserDto } from './dto/user-login.dto';
 import { GetLoggedInDto } from './dto/get-logged-in.dto';
+import {mapUserToGetUserDto} from "../user/mappers/user.mapper";
+import {UserService} from "../user/user.service";
+import {verifyPassword} from "../common/helpers/password.helper";
 
 @Injectable()
 export class AuthService {

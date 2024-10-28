@@ -1,6 +1,6 @@
 import { Exclude } from "class-transformer";
-import { UserEntity } from "src/user/entities/user.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {UserEntity} from "../../user/entities/user.entity";
 
 @Entity({name: "organization"})
 export class OrganizationEntity {

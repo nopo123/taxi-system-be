@@ -12,13 +12,14 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { OrderUserModule } from './order_user/order_user.module';
+import { SetupModule } from './setup/setup.module';
 config();
 
 @Module({
   imports: [
     UserModule,
-    OrderModule,
     OrganizationModule,
+    OrderModule,
     OrderUserModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -55,6 +56,7 @@ config();
         limit: 50,
       },
     ]),
+    SetupModule,
   ],
   controllers: [AppController],
   providers: [

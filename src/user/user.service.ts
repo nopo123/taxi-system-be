@@ -16,10 +16,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from './enums/role.enum';
 import { CreateSuperAdminDto } from './dto/create-super-admin.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { passwordHash } from 'src/common/helpers/password.helper';
-import { OrganizationService } from 'src/organization/organization.service';
-import { GetOrganizationDto } from 'src/organization/dto/get-organization.dto';
-import { OrderService } from 'src/order/order.service';
+import {OrderService} from "../order/order.service";
+import {OrganizationService} from "../organization/organization.service";
+import {GetOrganizationDto} from "../organization/dto/get-organization.dto";
+import {passwordHash} from "../common/helpers/password.helper";
+
 
 @Injectable()
 export class UserService {
@@ -37,7 +38,6 @@ export class UserService {
     loggedUser: UserEntity,
   ): Promise<GetUserDto> {
     const foundUser: UserEntity = await this.findUserByEmail(body.email);
-
     if (foundUser) {
       throw new InternalServerErrorException(
         'Nie je možné vytvoriť používateľa',
@@ -78,6 +78,22 @@ export class UserService {
       organization: null,
       orders: [],
       role: Role.SUPER_ADMIN,
+    });
+
+    const savedUser = await this.userRepository.save(createdUser);
+
+    return mapUserToGetUserDto(savedUser);
+  }
+
+  async createAdmin(CreateAdminDto: CreateUserDto, organizationId: number): Promise<GetUserDto> {
+    const organization: GetOrganizationDto = await this.organizationService.findOne(organizationId);
+
+    const createdUser: UserEntity = this.userRepository.create({
+      ...CreateAdminDto,
+      organizationId: organizationId,
+      organization: organization,
+      orders: [],
+      role: Role.ADMIN,
     });
 
     const savedUser = await this.userRepository.save(createdUser);

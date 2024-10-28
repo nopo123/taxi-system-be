@@ -14,12 +14,12 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrderDto } from './dto/get-order-dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import PDFDocument from 'pdfkit';
-import { OrderUserEntity } from 'src/order_user/entities/order-user.entity';
-import { Role } from 'src/user/enums/role.enum';
-import { OrganizationService } from 'src/organization/organization.service';
-import { UserService } from 'src/user/user.service';
-import { GetUserDto } from 'src/user/dto/get-user.dto';
-import { OrderUserService } from 'src/order_user/order_user.service';
+import {OrganizationService} from "../organization/organization.service";
+import {UserService} from "../user/user.service";
+import {OrderUserService} from "../order_user/order_user.service";
+import {GetUserDto} from "../user/dto/get-user.dto";
+import {Role} from "../user/enums/role.enum";
+
 
 @Injectable()
 export class OrderService {

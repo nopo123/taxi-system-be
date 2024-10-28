@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nes
 import { OrganizationService } from './organization.service';
 import { CreateOrganiationDto } from './dto/create-organization.dto';
 import { GetOrganizationDto } from './dto/get-organization.dto';
-import { RolesGuard } from 'src/common/guards/role.guards';
-import { Roles } from 'src/common/decorators/role.decorator';
-import { Role } from 'src/user/enums/role.enum';
+import {RolesGuard} from "../common/guards/role.guards";
+import {Role} from "../user/enums/role.enum";
+import {Roles} from "../common/decorators/role.decorator";
 
 @Controller('organization')
 export class OrganizationController {

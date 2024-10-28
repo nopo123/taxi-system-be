@@ -2,9 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { OrderUserEntity } from './entities/order-user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { mapOrderUserToGetOrderUserDto } from './mappers/order-user.mapper';
 import { GetOrderUserDto } from './dto/get-order-user.dto';
+import {UserEntity} from "../user/entities/user.entity";
 
 @Injectable()
 export class OrderUserService {

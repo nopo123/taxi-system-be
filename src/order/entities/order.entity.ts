@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { UserEntity } from 'src/user/entities/user.entity';
+
 import {
   Entity,
   Column,
@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import {UserEntity} from "../../user/entities/user.entity";
 
 @Entity({ name: 'order' })
 export class OrderEntity {

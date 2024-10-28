@@ -1,4 +1,4 @@
-import { mapUserToGetUserDto } from "src/user/mappers/user.mapper";
+import { mapUserToGetUserDto } from "../../user/mappers/user.mapper";
 import { GetOrganizationDto } from "../dto/get-organization.dto";
 import { OrganizationEntity } from "../entities/organization.entity";
 

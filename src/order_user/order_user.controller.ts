@@ -1,10 +1,10 @@
 import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { OrderUserService } from './order_user.service';
-import { Roles } from 'src/common/decorators/role.decorator';
-import { RolesGuard } from 'src/common/guards/role.guards';
-import { Role } from 'src/user/enums/role.enum';
-import { LoggedInUser } from 'src/common/decorators/login-user.decorator';
+import {UserEntity} from "../user/entities/user.entity";
+import {LoggedInUser} from "../common/decorators/login-user.decorator";
+import {RolesGuard} from "../common/guards/role.guards";
+import {Role} from "../user/enums/role.enum";
+import {Roles} from "../common/decorators/role.decorator";
 
 @Controller('order-user')
 export class OrderUserController {

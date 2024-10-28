@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { GetOrganizationDto } from './dto/get-organization.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { OrganizationEntity } from './entities/organization.entity';
 import { CreateOrganiationDto } from './dto/create-organization.dto';
 import { mapOrganizationToGetOrganizationDto } from './mappers/organization.mapper';
-import { OrderEntity } from 'src/order/entities/order.entity';
 import { Connection, EntityManager } from 'typeorm';
+import {UserEntity} from "../user/entities/user.entity";
+import {OrderEntity} from "../order/entities/order.entity";
 
 @Injectable()
 export class OrganizationService {
@@ -30,7 +30,6 @@ export class OrganizationService {
     });
 
     await this.organizationRepository.save(createdOrganization);
-
     return mapOrganizationToGetOrganizationDto(createdOrganization);
   }
 

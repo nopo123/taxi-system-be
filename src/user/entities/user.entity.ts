@@ -1,7 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { passwordHash } from 'src/common/helpers/password.helper';
-import { OrderEntity } from 'src/order/entities/order.entity';
-import { OrganizationEntity } from 'src/organization/entities/organization.entity';
+
 import {
   Entity,
   Column,
@@ -12,6 +10,9 @@ import {
   BeforeUpdate,
   JoinColumn,
 } from 'typeorm';
+import {OrganizationEntity} from "../../organization/entities/organization.entity";
+import {passwordHash} from "../../common/helpers/password.helper";
+import {OrderEntity} from "../../order/entities/order.entity";
 
 @Entity({ name: 'user' })
 export class UserEntity {

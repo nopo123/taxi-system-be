@@ -14,14 +14,13 @@ import { GetUserDto } from './dto/get-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import { Public } from 'src/common/decorators/public.decorator';
 import { CreateSuperAdminDto } from './dto/create-super-admin.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { RolesGuard } from 'src/common/guards/role.guards';
 import { Role } from './enums/role.enum';
-import { Roles } from 'src/common/decorators/role.decorator';
-import { GetOrderDto } from 'src/order/dto/get-order-dto';
-import { LoggedInUser } from 'src/common/decorators/login-user.decorator';
+import {Roles} from "../common/decorators/role.decorator";
+import {RolesGuard} from "../common/guards/role.guards";
+import {LoggedInUser} from "../common/decorators/login-user.decorator";
+import {Public} from "../common/decorators/public.decorator";
 
 @Controller('user')
 export class UserController {

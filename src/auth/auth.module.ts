@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './guards/constants';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './guards/jwt.strategy';
+import {AppService} from "../app.service";
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { JwtStrategy } from './guards/jwt.strategy';
       secret: jwtConstants.secret,
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AppService, AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService, JwtModule, PassportModule],
 })
 export class AuthModule {}

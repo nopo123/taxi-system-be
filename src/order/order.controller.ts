@@ -11,15 +11,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UserEntity } from 'src/user/entities/user.entity';
 import { GetOrderDto } from './dto/get-order-dto';
 import { OrderService } from './order.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { Roles } from 'src/common/decorators/role.decorator';
-import { RolesGuard } from 'src/common/guards/role.guards';
-import { Role } from 'src/user/enums/role.enum';
 import { Response } from 'express';
-import { LoggedInUser } from 'src/common/decorators/login-user.decorator';
+import {Roles} from "../common/decorators/role.decorator";
+import {Role} from "../user/enums/role.enum";
+import {RolesGuard} from "../common/guards/role.guards";
+import {LoggedInUser} from "../common/decorators/login-user.decorator";
+import {UserEntity} from "../user/entities/user.entity";
 
 @Controller('order')
 export class OrderController {
@@ -32,6 +32,7 @@ export class OrderController {
     @Body() body: CreateOrderDto,
     @LoggedInUser() user: UserEntity,
   ): Promise<GetOrderDto> {
+    console.log('user', user, body);
     return await this.orderService.create(body, user);
   }
 
