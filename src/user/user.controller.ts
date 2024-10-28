@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUserDto } from './dto/get-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -29,19 +19,8 @@ export class UserController {
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   @UseGuards(RolesGuard)
   @Post()
-  async create(
-    @Body() body: CreateUserDto,
-    @LoggedInUser() user: UserEntity,
-  ): Promise<GetUserDto> {
+  async create(@Body() body: CreateUserDto, @LoggedInUser() user: UserEntity): Promise<GetUserDto> {
     return await this.userService.create(body, user);
-  }
-
-  @Public()
-  @Post('/super-admin')
-  async createSuperAdmin(
-    @Body() body: CreateSuperAdminDto,
-  ): Promise<GetUserDto> {
-    return await this.userService.createSuperAdmin(body);
   }
 
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
@@ -76,10 +55,7 @@ export class UserController {
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   @UseGuards(RolesGuard)
   @Delete(':id')
-  async delete(
-    @Param('id') id: number,
-    @LoggedInUser() user: UserEntity,
-  ): Promise<void> {
+  async delete(@Param('id') id: number, @LoggedInUser() user: UserEntity): Promise<void> {
     return await this.userService.delete(id, user);
   }
 }

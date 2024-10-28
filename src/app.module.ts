@@ -5,7 +5,6 @@ import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
 import { OrganizationModule } from './organization/organization.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { config } from 'dotenv';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
@@ -13,6 +12,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { OrderUserModule } from './order_user/order_user.module';
 import { SetupModule } from './setup/setup.module';
+import dataSourceOptions from './data-source';
+import { config } from 'dotenv';
 config();
 
 @Module({
@@ -26,17 +27,8 @@ config();
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
-      // logging: true,
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: +process.env.DATABASE_PORT,
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      autoLoadEntities: process.env.NODE_ENV != 'production',
-      synchronize: true,
-      ssl: process.env.NODE_ENV == 'production',
-      entities: [__dirname + '/**/*.entity{.ts}'],
+      ...dataSourceOptions,
+      autoLoadEntities: process.env.NODE_ENV !== 'production',
     }),
     AuthModule,
     ThrottlerModule.forRoot([
