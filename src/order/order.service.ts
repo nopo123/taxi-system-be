@@ -56,7 +56,7 @@ export class OrderService {
   async findAll(loggedUser: UserEntity, page: number): Promise<GetOrderDto[]> {
     let orders: OrderEntity[] = [];
     if (loggedUser.role === Role.SUPER_ADMIN) {
-      await this.orderRepository.find({
+      orders = await this.orderRepository.find({
         order: { date: 'DESC' },
         skip: page,
         take: 20,
@@ -94,7 +94,7 @@ export class OrderService {
       throw new NotFoundException('Objednávka nebola nájdená');
     }
 
-    if (order.organizationId !== loggedUser.organizationId) {
+    if (order.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN) {
       throw new ForbiddenException('Objednávka nie je súčasťou organizácie');
     }
 

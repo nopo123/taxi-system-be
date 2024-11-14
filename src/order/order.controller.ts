@@ -4,16 +4,19 @@ import { GetOrderDto } from './dto/get-order.dto';
 import { OrderService } from './order.service';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Response } from 'express';
-import {Roles} from "../common/decorators/role.decorator";
-import {Role} from "../user/enums/role.enum";
-import {RolesGuard} from "../common/guards/role.guards";
-import {LoggedInUser} from "../common/decorators/login-user.decorator";
-import {UserEntity} from "../user/entities/user.entity";
+import { Roles } from '../common/decorators/role.decorator';
+import { Role } from '../user/enums/role.enum';
+import { RolesGuard } from '../common/guards/role.guards';
+import { LoggedInUser } from '../common/decorators/login-user.decorator';
+import { UserEntity } from '../user/entities/user.entity';
+import { RestApiResponseObject } from '../common/decorators/api-response-object.decorator';
+import { RestApiResponseArray } from '../common/decorators/api-response-array.decorator';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @RestApiResponseObject(GetOrderDto, 'The order has been successfully created', 'The order has been created', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @UseGuards(RolesGuard)
   @Post()
@@ -21,6 +24,7 @@ export class OrderController {
     return await this.orderService.create(body, user);
   }
 
+  @RestApiResponseObject(null, 'Pdf has been successfully created', 'Creation of pdf', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN)
   @UseGuards(RolesGuard)
   @Get('/pdf')
@@ -28,6 +32,7 @@ export class OrderController {
     return await this.orderService.getPdf(user, date, to);
   }
 
+  @RestApiResponseArray(GetOrderDto, 'All orders have been successfully found', 'Find all orders', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @UseGuards(RolesGuard)
   @Get()
@@ -35,6 +40,7 @@ export class OrderController {
     return await this.orderService.findAll(user, page);
   }
 
+  @RestApiResponseObject(null, 'Find order by id', 'Order was found by id', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @UseGuards(RolesGuard)
   @Get(':id')
@@ -42,6 +48,7 @@ export class OrderController {
     return await this.orderService.findOne(id, user);
   }
 
+  @RestApiResponseObject(null, 'Update order by id', 'Updated order', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @UseGuards(RolesGuard)
   @Put(':id')
@@ -53,6 +60,7 @@ export class OrderController {
     return await this.orderService.update(id, body, user);
   }
 
+  @RestApiResponseObject(null, 'Order has been successfully deleted', 'Order has been deleted', 'Order')
   @Roles(Role.SUPER_ADMIN, Role.ADMIN, Role.USER)
   @UseGuards(RolesGuard)
   @Delete(':id')

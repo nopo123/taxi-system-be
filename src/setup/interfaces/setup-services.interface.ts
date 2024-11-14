@@ -5,14 +5,14 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { OrganizationService } from '../../organization/organization.service';
 import { OrganizationEntity } from '../../organization/entities/organization.entity';
 import { GetOrganizationDto } from '../../organization/dto/get-organization.dto';
-import {GetRolesDto} from "../../roles/dto/get-roles.dto";
-import {RolesService} from "../../roles/roles.service";
-import {OrderService} from "../../order/order.service";
-import {OrderUserService} from "../../order_user/order_user.service";
-import { OrderEntity } from 'src/order/entities/order.entity';
-import { GetOrderUserDto } from 'src/order_user/dto/get-order-user.dto';
-import { OrderUserEntity } from 'src/order_user/entities/order-user.entity';
-import { GetOrderDto } from 'src/order/dto/get-order.dto';
+import { GetRolesDto } from '../../roles/dto/get-roles.dto';
+import { RolesService } from '../../roles/roles.service';
+import { OrderService } from '../../order/order.service';
+import { OrderUserService } from '../../order_user/order_user.service';
+import { OrderEntity } from '../../order/entities/order.entity';
+import { GetOrderUserDto } from '../../order_user/dto/get-order-user.dto';
+import { OrderUserEntity } from '../../order_user/entities/order-user.entity';
+import { GetOrderDto } from '../../order/dto/get-order.dto';
 
 export interface SetupTestingData {
   app: NestExpressApplication;

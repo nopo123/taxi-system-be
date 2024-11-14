@@ -1,48 +1,48 @@
 import { Type } from 'class-transformer';
 import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
-import { GetUserDto } from 'src/user/dto/get-user.dto';
+import { GetUserDto } from '../../user/dto/get-user.dto';
 
 export class GetOrderDto {
   @IsNumber()
-  id: number;
+  readonly id: number;
 
   @IsString()
-  firstName: string;
+  readonly firstName: string;
 
   @IsString()
-  lastName: string;
+  readonly lastName: string;
 
   @IsString()
-  route: string;
+  readonly route: string;
 
   @IsString()
-  date: Date;
+  readonly date: Date;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  price: number;
+  readonly price: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  distance: number;
+  readonly distance: number;
 
   @IsNumber()
-  secondDriver: number;
+  readonly secondDriver: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  waitingTime: number;
+  readonly waitingTime: number;
 
   @IsOptional()
   @IsString()
-  driverSignature?: string;
+  readonly driverSignature?: string;
 
   @IsOptional()
   @IsString()
-  clientSignature?: string;
+  readonly clientSignature?: string;
 
   @IsOptional()
   @IsObject()
   @Type(() => GetUserDto)
-  user?: GetUserDto | null;
+  readonly user?: GetUserDto | null;
 }

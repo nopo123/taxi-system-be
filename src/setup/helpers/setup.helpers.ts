@@ -1,18 +1,7 @@
 import { SetupTestingEntitiesHelpers } from './setup-testing-entities.helpers';
-import {
-  Services,
-  SetupConfig,
-  SetupTestingData,
-  Tokens,
-} from '../interfaces/setup-services.interface';
+import { Services, SetupConfig, SetupTestingData, Tokens } from '../interfaces/setup-services.interface';
 import { Type } from '@nestjs/common/interfaces/type.interface';
-import {
-  DynamicModule,
-  ForwardReference,
-  HttpStatus,
-  ModuleMetadata,
-  Provider, ValidationPipe,
-} from '@nestjs/common';
+import { DynamicModule, ForwardReference, HttpStatus, ModuleMetadata, Provider } from '@nestjs/common';
 import { AppModule } from '../../app.module';
 import { UserModule } from '../../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,16 +19,12 @@ import { OrganizationEntity } from '../../organization/entities/organization.ent
 import { RolesEntity } from '../../roles/entities/roles.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { config } from 'dotenv';
-import {LoginUserDto} from "../../auth/dto/user-login.dto";
-import {join} from "path";
-import {AllExceptionsFilter} from "../../common/filters/all-exceptions.filter";
-import {customExceptionFactory} from "../../common/helpers/validation.helper";
-import {OrganizationModule} from "../../organization/organization.module";
-import {OrderService} from "../../order/order.service";
-import {OrderUserService} from "../../order_user/order_user.service";
-import {AuthModule} from "../../auth/auth.module";
-import {OrderEntity} from "../../order/entities/order.entity";
-import {OrderUserEntity} from "../../order_user/entities/order-user.entity";
+import { LoginUserDto } from '../../auth/dto/user-login.dto';
+import { OrderService } from '../../order/order.service';
+import { OrderUserService } from '../../order_user/order_user.service';
+import { AuthModule } from '../../auth/auth.module';
+import { OrderEntity } from '../../order/entities/order.entity';
+import { OrderUserEntity } from '../../order_user/entities/order-user.entity';
 
 config();
 
@@ -49,9 +34,7 @@ export class SetupHelpers {
   async createSetupApp(config: SetupConfig): Promise<SetupTestingData> {
     const { moduleMetaData } = this.prepareModuleMetaData();
 
-    const moduleFixture = await Test.createTestingModule(
-      moduleMetaData,
-    ).compile();
+    const moduleFixture = await Test.createTestingModule(moduleMetaData).compile();
 
     const services: Services = this.setupServices(moduleFixture);
 
@@ -65,11 +48,7 @@ export class SetupHelpers {
 
     this.testingEntitiesHelper = new SetupTestingEntitiesHelpers(services);
     const data = await this.testingEntitiesHelper.createTestingData(config);
-    const tokens = await this.createSetupTokens(
-      data.superAdmin,
-      data.admins[0],
-      app,
-    );
+    const tokens = await this.createSetupTokens(data.superAdmin, data.admins[0], app);
 
     return {
       app,
@@ -79,23 +58,22 @@ export class SetupHelpers {
   }
 
   prepareModuleMetaData(): { moduleMetaData: ModuleMetadata } {
-    const imports: Array<
-      Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference
-    > = [
+    const imports: Array<Type<any> | DynamicModule | Promise<DynamicModule> | ForwardReference> = [
       AppModule,
       UserModule,
       AuthModule,
       JwtModule.register({ secret: process.env.JWT_SECRET }),
-      TypeOrmModule.forFeature([
-        UserEntity,
-        OrganizationEntity,
-        RolesEntity,
-        OrderEntity,
-        OrderUserEntity,
-      ]),
+      TypeOrmModule.forFeature([UserEntity, OrganizationEntity, RolesEntity, OrderEntity, OrderUserEntity]),
     ];
 
-    const providers: Provider[] = [UserService, AuthService, OrganizationService, RolesService, OrderService, OrderUserService];
+    const providers: Provider[] = [
+      UserService,
+      AuthService,
+      OrganizationService,
+      RolesService,
+      OrderService,
+      OrderUserService,
+    ];
 
     return {
       moduleMetaData: {
@@ -106,17 +84,12 @@ export class SetupHelpers {
   }
 
   setupServices(moduleFixture: TestingModule): Services {
-    const usersService: UserService =
-      moduleFixture.get<UserService>(UserService);
-    const organizationService: OrganizationService =
-      moduleFixture.get<OrganizationService>(OrganizationService);
-    const rolesService: RolesService =
-      moduleFixture.get<RolesService>(RolesService);
-  const orderService: OrderService =
-      moduleFixture.get<OrderService>(OrderService);
-  const orderUserService: OrderUserService =
-      moduleFixture.get<OrderUserService>(OrderUserService);
-  return {
+    const usersService: UserService = moduleFixture.get<UserService>(UserService);
+    const organizationService: OrganizationService = moduleFixture.get<OrganizationService>(OrganizationService);
+    const rolesService: RolesService = moduleFixture.get<RolesService>(RolesService);
+    const orderService: OrderService = moduleFixture.get<OrderService>(OrderService);
+    const orderUserService: OrderUserService = moduleFixture.get<OrderUserService>(OrderUserService);
+    return {
       usersService,
       organizationService,
       rolesService,
@@ -158,7 +131,6 @@ export class SetupHelpers {
       .then((res) => {
         adminToken = res.body.access_token;
       });
-
 
     return {
       superAdminToken,

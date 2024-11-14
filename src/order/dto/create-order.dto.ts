@@ -1,49 +1,49 @@
-import { IsNumber, IsOptional, IsString, Min } from "class-validator";
-import { Type } from "class-transformer";
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateOrderDto {
   @IsNumber()
-  userId: number;
+  readonly userId: number;
 
   @IsString()
-  firstName: string;
+  readonly firstName: string;
 
   @IsString()
-  lastName: string;
+  readonly lastName: string;
 
   @IsNumber()
   @IsOptional()
-  orderUserId?: number | null;
+  readonly orderUserId?: number | null;
 
   @IsString()
-  route: string;
+  readonly route: string;
 
   @IsString()
-  date: string;
+  readonly date: string;
 
   @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 })
   @Min(0)
   @Type(() => Number)
-  price: number;
+  readonly price: number;
 
   @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 })
   @Min(0)
   @Type(() => Number)
-  distance: number;
+  readonly distance: number;
 
   @IsNumber({ allowNaN: false, allowInfinity: false, maxDecimalPlaces: 2 })
   @Min(0)
   @Type(() => Number)
-  secondDriver: number;
+  readonly secondDriver: number;
 
   @IsNumber()
   @Min(0)
   @Type(() => Number)
-  waitingTime: number;
+  readonly waitingTime: number;
 
   @IsString()
-  driverSignature: string;
+  readonly driverSignature: string;
 
   @IsString()
-  clientSignature: string;
+  readonly clientSignature: string;
 }

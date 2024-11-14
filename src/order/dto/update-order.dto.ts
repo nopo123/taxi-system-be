@@ -3,35 +3,35 @@ import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class UpdateOrderDto {
   @IsString()
-  firstName: string;
+  readonly firstName: string;
 
   @IsString()
-  lastName: string;
+  readonly lastName: string;
 
   @IsOptional()
   @IsNumber()
   @Min(1)
   @Type(() => Number)
-  orderUserId: number;
+  readonly orderUserId: number;
 
   @IsString()
-  route: string;
+  readonly route: string;
 
   @IsString()
-  date: string;
+  readonly date: string;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  price: number;
+  readonly price: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  distance: number;
+  readonly distance: number;
 
   @IsNumber()
-  secondDriver: number;
+  readonly secondDriver: number;
 
   @IsNumber({ maxDecimalPlaces: 2 })
   @Type(() => Number)
-  waitingTime: number;
+  readonly waitingTime: number;
 }

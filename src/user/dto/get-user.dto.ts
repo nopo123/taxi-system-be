@@ -1,6 +1,6 @@
 import { IsNumber, IsString, IsEmail, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
-import { GetOrderDto } from 'src/order/dto/get-order.dto';
+import { GetOrderDto } from '../../order/dto/get-order.dto';
 
 export class GetUserDto {
   @IsNumber()
@@ -24,5 +24,5 @@ export class GetUserDto {
 
   @IsArray()
   @Type(() => GetOrderDto)
-  orders: GetOrderDto[];
+  readonly orders: GetOrderDto[];
 }

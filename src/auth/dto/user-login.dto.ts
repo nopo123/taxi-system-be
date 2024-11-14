@@ -1,9 +1,9 @@
 import { IsEmail, IsString } from 'class-validator';
 
 export class LoginUserDto {
-  @IsEmail()
+  @IsEmail({}, { message: 'Invalid email address' })
   readonly email: string;
 
-  @IsString()
+  @IsString({ message: 'Password must be a string' })
   readonly password: string;
 }

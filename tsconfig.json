@@ -19,5 +19,8 @@
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "paths": {
+      "src/*": ["src/*"]
+    }
   }
 }
