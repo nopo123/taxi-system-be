@@ -55,7 +55,6 @@ export class OrderService {
 
   async findAll(loggedUser: UserEntity, page: number): Promise<GetOrderDto[]> {
     let orders: OrderEntity[] = [];
-    console.log('loggedUser', loggedUser);
     if (loggedUser.role === Role.SUPER_ADMIN) {
       orders = await this.orderRepository.find({
         order: { date: 'DESC' },
