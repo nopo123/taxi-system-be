@@ -1,9 +1,9 @@
-import { IsString } from "class-validator";
+import { IsString } from 'class-validator';
 
 export class CreateOrganizationDto {
   @IsString()
-  name: string;
+  readonly name: string;
 
   @IsString()
-  address: string;
+  readonly address: string;
 }

@@ -24,5 +24,5 @@ export class GetUserDto {
 
   @IsArray()
   @Type(() => GetOrderDto)
-  orders: GetOrderDto[];
+  readonly orders: GetOrderDto[];
 }
