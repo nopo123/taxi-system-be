@@ -6,8 +6,33 @@ services:
     container_name: drivers-system-database
     restart: always
     ports:
-      - "5432:5432"
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: drivers-system-backend
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  db_data:
