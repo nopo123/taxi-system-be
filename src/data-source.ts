@@ -1,5 +1,10 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
+import { UserEntity } from './user/entities/user.entity';
+import { RolesEntity } from './roles/entities/roles.entity';
+import { OrganizationEntity } from './organization/entities/organization.entity';
+import { OrderUserEntity } from './order_user/entities/order-user.entity';
+import { OrderEntity } from './order/entities/order.entity';
 config();
 
 const dataSourceOptions: DataSourceOptions = {
@@ -12,7 +17,13 @@ const dataSourceOptions: DataSourceOptions = {
   database: process.env.DATABASE_NAME,
   synchronize: true,
   ssl: process.env.NODE_ENV == 'production',
-  entities: [__dirname + '/**/*.entity{.ts}'],
+  entities: [
+    UserEntity,
+    RolesEntity,
+    OrganizationEntity,
+    OrderUserEntity,
+    OrderEntity  
+  ],
   migrations: [__dirname + '/migrations/*.ts'],
 };
 
