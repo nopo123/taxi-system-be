@@ -9,13 +9,16 @@ config();
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector, private jwtService: JwtService) {}
+  constructor(
+    private reflector: Reflector,
+    private jwtService: JwtService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
     if (!requiredRoles) {
       return true;
@@ -29,7 +32,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const token = authHeader.split(' ')[1];
-    const secret = process.env.JWT_TOKEN;
+    const secret = process.env.JWT_SECRET;
 
     try {
       const decodedToken = this.jwtService.verify(token, { secret: secret });

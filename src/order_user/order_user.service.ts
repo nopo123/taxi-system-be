@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { mapOrderUserToGetOrderUserDto } from './mappers/order-user.mapper';
 import { GetOrderUserDto } from './dto/get-order-user.dto';
-import {UserEntity} from "../user/entities/user.entity";
+import { UserEntity } from '../user/entities/user.entity';
 
 @Injectable()
 export class OrderUserService {
@@ -13,11 +13,11 @@ export class OrderUserService {
     private readonly orderUserRepository: Repository<OrderUserEntity>,
   ) {}
 
-  async create(
-    firstName: string,
-    lastName: string,
-    loggedUser: UserEntity,
-  ): Promise<void> {
+  async create(firstName: string, lastName: string, loggedUser: UserEntity): Promise<void> {
+    if (loggedUser.organizationId === null) {
+      throw new NotFoundException('Organizácia nebola nájdená');
+    }
+
     const createdOrderUser: OrderUserEntity = this.orderUserRepository.create({
       firstName,
       lastName,
@@ -32,9 +32,7 @@ export class OrderUserService {
       where: { organizationId: user.organizationId },
     });
 
-    return orderUsers.map((orderUser: OrderUserEntity) =>
-      mapOrderUserToGetOrderUserDto(orderUser),
-    );
+    return orderUsers.map((orderUser: OrderUserEntity) => mapOrderUserToGetOrderUserDto(orderUser));
   }
 
   async remove(id: number, user: UserEntity): Promise<void> {

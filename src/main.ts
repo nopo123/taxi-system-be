@@ -4,6 +4,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
+import { config } from 'dotenv';
+config();
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -21,13 +23,10 @@ async function bootstrap() {
     }),
   );
 
-  const config = new DocumentBuilder()
-    .setTitle('Taxi system docs')
-    .setVersion('0.0.1')
-    .build();
+  const config = new DocumentBuilder().setTitle('Taxi system docs').setVersion('0.0.1').build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-
-  await app.listen(3000);
+  console.log(`Server is running on ${process.env.PORT}`);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
