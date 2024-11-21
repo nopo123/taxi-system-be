@@ -1,4 +1,4 @@
-import { ForbiddenException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, forwardRef, Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Between, Repository } from 'typeorm';
@@ -8,12 +8,11 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrderDto } from './dto/get-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import PDFDocument from 'pdfkit';
-import {OrganizationService} from "../organization/organization.service";
-import {UserService} from "../user/user.service";
-import {OrderUserService} from "../order_user/order_user.service";
-import {GetUserDto} from "../user/dto/get-user.dto";
-import {Role} from "../user/enums/role.enum";
-
+import { OrganizationService } from '../organization/organization.service';
+import { UserService } from '../user/user.service';
+import { OrderUserService } from '../order_user/order_user.service';
+import { GetUserDto } from '../user/dto/get-user.dto';
+import { Role } from '../user/enums/role.enum';
 
 @Injectable()
 export class OrderService {
@@ -28,13 +27,17 @@ export class OrderService {
     private readonly orderUserService: OrderUserService,
   ) {}
 
+  private readonly logger = new Logger(OrderService.name);
+
   async create(body: CreateOrderDto, loggedUser: UserEntity): Promise<GetOrderDto> {
+    this.logger.log(`Creating order for user with id: ${body.userId}`);
     const foundUser: GetUserDto = await this.userService.findOne(body.userId, loggedUser);
 
     if (
       (loggedUser.organizationId === null || foundUser.organizationId === null) &&
       loggedUser.role !== Role.SUPER_ADMIN
     ) {
+      this.logger.error(`User with email: ${loggedUser.email} is not part of an organization`);
       throw new NotFoundException('Používateľ nie je súčasťou organizácie');
     }
 
@@ -50,11 +53,14 @@ export class OrderService {
     });
 
     const savedOrder = await this.orderRepository.save(createdOrder);
+
+    this.logger.log(`Order with id: ${savedOrder.id} created successfully`);
     return mapOrderToGetOrderDto(savedOrder);
   }
 
   async findAll(loggedUser: UserEntity, page: number): Promise<GetOrderDto[]> {
     let orders: OrderEntity[] = [];
+    this.logger.log(`Finding all orders for user`);
     if (loggedUser.role === Role.SUPER_ADMIN) {
       orders = await this.orderRepository.find({
         order: { date: 'DESC' },
@@ -81,34 +87,42 @@ export class OrderService {
       });
     }
 
+    this.logger.log(`Found ${orders.length} orders`);
     return orders.map((order: OrderEntity) => mapOrderToGetOrderDto(order));
   }
 
   async findOne(id: number, loggedUser: UserEntity): Promise<GetOrderDto> {
+    this.logger.log(`Finding order with id: ${id}`);
     const order = await this.orderRepository.findOne({
       where: { id: id },
       relations: ['user'],
     });
 
     if (!order) {
+      this.logger.error(`Order with id: ${id} not found`);
       throw new NotFoundException('Objednávka nebola nájdená');
     }
 
     if (order.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN) {
+      this.logger.error(`Order with id: ${id} is not part of user's organization`);
       throw new ForbiddenException('Objednávka nie je súčasťou organizácie');
     }
 
+    this.logger.log(`Order with id: ${id} found successfully`);
     return mapOrderToGetOrderDto(order);
   }
 
   async update(id: number, body: UpdateOrderDto, loggedUser: UserEntity): Promise<GetOrderDto> {
+    this.logger.log(`Updating order with id: ${id}`);
     const order = await this.orderRepository.findOne({ where: { id: id } });
 
     if (!order) {
+      this.logger.error(`Order with id: ${id} not found`);
       throw new NotFoundException('Objednávka nebola nájdená');
     }
 
     if (order.organizationId !== loggedUser.organizationId) {
+      this.logger.error(`Order with id: ${id} is not part of user's organization`);
       throw new ForbiddenException('Objednávka nie je súčasťou organizácie');
     }
 
@@ -122,10 +136,12 @@ export class OrderService {
       await this.orderUserService.create(body.firstName, body.lastName, loggedUser);
     }
 
+    this.logger.log(`Order with id: ${id} updated successfully`);
     return mapOrderToGetOrderDto(updatedOrder);
   }
 
   async delete(id: number): Promise<void> {
+    this.logger.log(`Deleting order with id: ${id}`);
     const order = await this.orderRepository.findOne({
       where: { id: id },
       relations: ['user'],
@@ -136,9 +152,11 @@ export class OrderService {
     }
 
     await this.orderRepository.delete({ id: id });
+    this.logger.log(`Order with id: ${id} deleted successfully`);
   }
 
   async getPdf(loggedUser: UserEntity, from: string, to: string): Promise<any> {
+    this.logger.log(`Generating PDF for user with email: ${loggedUser.email}`);
     const fromObj = new Date(from);
     const toObj = new Date(to);
 
@@ -216,6 +234,7 @@ export class OrderService {
         resolve(pdfBuffer);
       });
 
+      this.logger.log('PDF generated successfully');
       pdfDoc.end();
     });
   }

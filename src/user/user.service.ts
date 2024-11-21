@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { UserEntity } from './entities/user.entity';
@@ -16,11 +17,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from './enums/role.enum';
 import { CreateSuperAdminDto } from './dto/create-super-admin.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import {OrderService} from "../order/order.service";
-import {OrganizationService} from "../organization/organization.service";
-import {GetOrganizationDto} from "../organization/dto/get-organization.dto";
-import {passwordHash} from "../common/helpers/password.helper";
-
+import { OrderService } from '../order/order.service';
+import { OrganizationService } from '../organization/organization.service';
+import { GetOrganizationDto } from '../organization/dto/get-organization.dto';
+import { passwordHash } from '../common/helpers/password.helper';
 
 @Injectable()
 export class UserService {
@@ -32,22 +32,19 @@ export class UserService {
     @Inject(forwardRef(() => OrderService))
     private readonly orderService: OrderService,
   ) {}
+  private readonly logger = new Logger(UserService.name);
 
-  async create(
-    body: CreateUserDto,
-    loggedUser: UserEntity,
-  ): Promise<GetUserDto> {
+  async create(body: CreateUserDto, loggedUser: UserEntity): Promise<GetUserDto> {
+    this.logger.log(`Creating user with: ${body.firstName} ${body.lastName}`);
     const foundUser: UserEntity = await this.findUserByEmail(body.email);
     if (foundUser) {
-      throw new InternalServerErrorException(
-        'Nie je možné vytvoriť používateľa',
-      );
+      this.logger.error(`User with email: ${body.email} already exists`);
+      throw new InternalServerErrorException('Nie je možné vytvoriť používateľa');
     }
 
-    const organization: GetOrganizationDto =
-      await this.organizationService.findOne(
-        body.organizationId || loggedUser.organizationId,
-      );
+    const organization: GetOrganizationDto = await this.organizationService.findOne(
+      body.organizationId || loggedUser.organizationId,
+    );
 
     const createdUser: UserEntity = this.userRepository.create({
       ...body,
@@ -58,18 +55,19 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(createdUser);
 
+    this.logger.log(`User with id: ${savedUser.id} created successfully`);
     return mapUserToGetUserDto(savedUser);
   }
 
   async createSuperAdmin(body: CreateSuperAdminDto): Promise<GetUserDto> {
+    this.logger.log(`Creating super admin with email`);
     const isSuperAdmin: UserEntity = await this.userRepository.findOne({
       where: { role: Role.SUPER_ADMIN },
     });
 
     if (isSuperAdmin) {
-      throw new InternalServerErrorException(
-        'Nie je možné vytvoriť používateľa',
-      );
+      this.logger.error(`Super admin already exists`);
+      throw new InternalServerErrorException('Nie je možné vytvoriť používateľa');
     }
 
     const createdUser: UserEntity = this.userRepository.create({
@@ -82,12 +80,14 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(createdUser);
 
+    this.logger.log(`Super admin with email: ${savedUser.id} created successfully`);
     return mapUserToGetUserDto(savedUser);
   }
 
   async createAdmin(CreateAdminDto: CreateUserDto, organizationId: number): Promise<GetUserDto> {
     const organization: GetOrganizationDto = await this.organizationService.findOne(organizationId);
 
+    this.logger.log(`Creating admin with email: ${CreateAdminDto.firstName} ${CreateAdminDto.lastName}`);
     const createdUser: UserEntity = this.userRepository.create({
       ...CreateAdminDto,
       organizationId: organizationId,
@@ -98,10 +98,12 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(createdUser);
 
+    this.logger.log(`Admin with email: ${savedUser.id} created successfully`);
     return mapUserToGetUserDto(savedUser);
   }
 
   async findAll(loggedUser: UserEntity): Promise<GetUserDto[]> {
+    this.logger.log(`Finding all users`);
     const users: UserEntity[] = await this.userRepository.find({
       where: {
         organizationId: loggedUser.organizationId,
@@ -112,6 +114,7 @@ export class UserService {
   }
 
   async findOne(id: number, loggedUser: UserEntity): Promise<GetUserDto> {
+    this.logger.log(`Finding user with id: ${id}`);
     const user = await this.userRepository.findOne({
       where: { id: id },
       relations: ['orders'],
@@ -121,29 +124,18 @@ export class UserService {
       throw new NotFoundException('Používateľ nebol nájdený');
     }
 
-    if (
-      user.organizationId !== loggedUser.organizationId &&
-      loggedUser.role !== Role.SUPER_ADMIN
-    ) {
-      throw new ForbiddenException(
-        'Nemáte oprávnenie na zobrazenie tohto používateľa',
-      );
+    if (user.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN) {
+      throw new ForbiddenException('Nemáte oprávnenie na zobrazenie tohto používateľa');
     }
 
+    this.logger.log(`User with id: ${id} found successfully`);
     return mapUserToGetUserDto(user);
   }
 
-  async update(
-    userId: number,
-    body: UpdateUserDto,
-    loggedUser: UserEntity,
-  ): Promise<GetUserDto> {
+  async update(userId: number, body: UpdateUserDto, loggedUser: UserEntity): Promise<GetUserDto> {
+    this.logger.log(`Updating user with id: ${userId}`);
     const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (
-      !user ||
-      (user.organizationId !== loggedUser.organizationId &&
-        loggedUser.role !== Role.SUPER_ADMIN)
-    ) {
+    if (!user || (user.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN)) {
       throw new NotFoundException('Používateľ nebol nájdený');
     }
     const userByEmail = await this.userRepository.findOne({
@@ -158,31 +150,26 @@ export class UserService {
       ...body,
     });
 
-    // Map updated user entity to DTO
+    this.logger.log(`User with id: ${userId} updated successfully`);
     return mapUserToGetUserDto(updatedUser);
   }
 
-  async updatePassword(
-    userId: number,
-    body: UpdatePasswordDto,
-    loggedUser: UserEntity,
-  ): Promise<GetUserDto> {
+  async updatePassword(userId: number, body: UpdatePasswordDto, loggedUser: UserEntity): Promise<GetUserDto> {
+    this.logger.log(`Updating password for user with id: ${userId}`);
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user) {
+      this.logger.error(`User with id: ${userId} not found`);
       throw new NotFoundException('Používateľ nebol nájdený');
     }
 
-    if (
-      user.organizationId !== loggedUser.organizationId &&
-      loggedUser.role !== Role.SUPER_ADMIN
-    ) {
-      throw new ForbiddenException(
-        'Nemáte oprávnenie na zmenu hesla tohto používateľa',
-      );
+    if (user.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN) {
+      this.logger.error(`User with id: ${userId} does not belong to your organization`);
+      throw new ForbiddenException('Nemáte oprávnenie na zmenu hesla tohto používateľa');
     }
 
     if (body.password !== body.confirmPassword) {
+      this.logger.error(`Passwords do not match`);
       throw new ForbiddenException('Heslá sa nezhodujú');
     }
 
@@ -192,6 +179,7 @@ export class UserService {
       password: await passwordHash(body.password),
     });
 
+    this.logger.log(`Password for user with id: ${userId} updated successfully`);
     return mapUserToGetUserDto(updatedUser);
   }
 
@@ -202,36 +190,27 @@ export class UserService {
     });
 
     if (!user) {
+      this.logger.error(`User with id: ${userId} not found`);
       throw new NotFoundException('Používateľ nebol nájdený');
     }
 
-    if (
-      user.organizationId !== loggedUser.organizationId &&
-      loggedUser.role !== Role.SUPER_ADMIN
-    ) {
-      throw new ForbiddenException(
-        'Nemáte oprávnenie na zmazanie tohto používateľa',
-      );
+    if (user.organizationId !== loggedUser.organizationId && loggedUser.role !== Role.SUPER_ADMIN) {
+      this.logger.error(`User with id: ${userId} does not belong to your organization`);
+      throw new ForbiddenException('Nemáte oprávnenie na zmazanie tohto používateľa');
     }
 
     for (const order of user.orders) {
       await this.orderService.delete(order.id);
     }
 
+    this.logger.log(`Deleting user with id: ${userId}`);
     await this.userRepository.delete({ id: userId });
   }
 
   async findUserByEmail(email: string): Promise<UserEntity> {
     return await this.userRepository.findOne({
       where: { email },
-      select: [
-        'id',
-        'email',
-        'firstName',
-        'lastName',
-        'organizationId',
-        'role',
-      ],
+      select: ['id', 'email', 'firstName', 'lastName', 'organizationId', 'role'],
     });
   }
 }
