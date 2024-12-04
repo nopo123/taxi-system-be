@@ -26,8 +26,6 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
           : exception.getResponse()
         : null;
 
-    // TODO: match fail vs error like https://github.com/omniti-labs/jsend
-
     if (status == HttpStatus.BAD_REQUEST) {
       const exceptionResponse: any = exception instanceof HttpException ? exception.getResponse() : {};
 
